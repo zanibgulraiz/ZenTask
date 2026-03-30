@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenTasks - Smart Feature Edition</title>
+    <title>ZenTasks - Smart & Mobile Responsive Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -47,7 +47,7 @@
         .main-content { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative;}
         
         /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 15px; }
         .header-left h1 { font-size: 24px; font-weight: 700; color: #0f172a; }
         .header-left p { font-size: 14px; color: #64748b; }
         .header-right { display: flex; align-items: center; gap: 20px; position: relative; }
@@ -89,17 +89,17 @@
         input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus { border-color: var(--active-item); background: #ffffff; }
         input[type="date"] { padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--input-bg); outline: none; cursor: pointer; color: #475569; font-size: 14px; }
         select { padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--input-bg); outline: none; cursor: pointer; color: #475569; font-size: 14px; }
-        .add-btn { background: var(--active-item); color: white; border: none; padding: 0 25px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+        .add-btn { background: var(--active-item); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; }
 
         /* Tasks */
         .task-list { list-style: none; flex: 1; }
         .task-item { 
             background: #ffffff; padding: 15px 20px; border-radius: 12px; margin-bottom: 10px; 
             display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); 
-            transition: all 0.2s ease; box-shadow: var(--shadow);
+            transition: all 0.2s ease; box-shadow: var(--shadow); flex-wrap: wrap; gap: 10px;
         }
         .task-item:hover { border-color: #cbd5e0; transform: translateY(-2px); }
-        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }
         .checkbox { cursor: pointer; color: #cbd5e0; font-size: 20px; }
         .checkbox.completed { color: #16a34a; }
         .task-text { font-size: 15px; color: #1e293b; font-weight: 500; }
@@ -115,7 +115,7 @@
         .delete-btn { color: #ef4444; font-size: 14px; opacity: 0.7; cursor: pointer; }
 
         /* Empty State */
-        .empty-state { display: none; flex-direction: column; justify-content: center; align-items: center; flex: 1; color: #94a3b8; text-align: center; gap: 15px; }
+        .empty-state { display: none; flex-direction: column; justify-content: center; align-items: center; flex: 1; color: #94a3b8; text-align: center; gap: 15px; padding: 40px 0; }
         .empty-state i { font-size: 48px; color: #cbd5e0; }
 
         /* Notification Toast */
@@ -126,11 +126,11 @@
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;
-            z-index: 1000;
+            z-index: 1000; padding: 20px;
         }
         .modal-overlay.show { display: flex; }
         .modal-box {
-            background: #ffffff; padding: 30px; border-radius: 16px; width: 400px;
+            background: #ffffff; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); position: relative;
         }
         .modal-header { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 20px; }
@@ -146,6 +146,84 @@
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #10b981; }
         input:checked + .slider:before { transform: translateX(26px); }
+
+
+        /* 📱 MOBILE RESPONSIVE QUERIES */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column; /* Stacks sidebar and main content */
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 15px 20px;
+                gap: 15px;
+            }
+
+            .sidebar .section-title {
+                display: none; /* Hides section title on mobile to save space */
+            }
+
+            .menu-list, .category-list {
+                display: flex;
+                overflow-x: auto; /* Lets you scroll items horizontally */
+                gap: 10px;
+                padding-bottom: 5px;
+            }
+
+            .menu-item {
+                flex-shrink: 0;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                flex-direction: column; /* Stacks stat cards vertically */
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .input-group {
+                flex-direction: column; /* Stacks inputs vertically */
+            }
+
+            input[type="text"], input[type="email"], input[type="time"], input[type="date"], select, .add-btn {
+                width: 100%; /* Full width for easier touch on mobile */
+            }
+
+            .header-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 20px 20px 0 0; /* Turns dropdowns into mobile bottom sheets */
+                box-shadow: 0 -10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+                justify-content: flex-end;
+                border-top: 1px solid var(--border-color);
+                padding-top: 10px;
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
 <body>

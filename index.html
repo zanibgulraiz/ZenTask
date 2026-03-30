@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenTasks - Smart Feature Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --sidebar-bg: #f1f5f9;
+            --main-text: #1e293b;
+            --active-item: #4f46e5;
+            --border-color: #e2e8f0;
+            --input-bg: #f8fafc;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--main-text); min-height: 100vh; overflow-x: hidden; }
+
+        /* App Layout */
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { 
+            width: 260px; background: var(--sidebar-bg); padding: 30px 20px; 
+            display: flex; flex-direction: column; gap: 25px; border-right: 1px solid var(--border-color);
+        }
+        .logo { font-size: 22px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+        .logo i { color: var(--active-item); }
+        
+        .menu-list, .category-list { list-style: none; }
+        .menu-item { 
+            padding: 12px 15px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 500; 
+            display: flex; justify-content: space-between; align-items: center; color: #64748b; transition: all 0.2s ease; 
+        }
+        .menu-item:hover { background: #e2e8f0; color: #0f172a; }
+        .menu-item.active { background: var(--active-item); color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+        .menu-item div { display: flex; align-items: center; gap: 12px; }
+        .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 12px; margin-top: 15px; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative;}
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .header-left h1 { font-size: 24px; font-weight: 700; color: #0f172a; }
+        .header-left p { font-size: 14px; color: #64748b; }
+        .header-right { display: flex; align-items: center; gap: 20px; position: relative; }
+        
+        .icon-btn { background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer; position: relative; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        .icon-btn:hover { background: #e2e8f0; color: #0f172a; }
+        .badge { position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: none; }
+        
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px 10px; border-radius: 10px; transition: background 0.2s; }
+        .user-profile:hover { background: #e2e8f0; }
+        .avatar { width: 35px; height: 35px; background: #4f46e5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: 600; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        /* HEADER DROPDOWNS */
+        .header-dropdown {
+            position: absolute; top: 50px; right: 0; width: 250px; background: #ffffff; 
+            border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none; flex-direction: column; z-index: 100; overflow: hidden;
+        }
+        .header-dropdown.show { display: flex; }
+        .dropdown-header { padding: 12px 15px; background: #f8fafc; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-color); color: #0f172a; }
+        .dropdown-item { padding: 12px 15px; font-size: 13px; color: #475569; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f1f5f9; transition: background 0.2s; }
+        .dropdown-item:hover { background: #f8fafc; color: #0f172a; }
+
+        /* Stats */
+        .stats-grid { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #ffffff; flex: 1; padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; box-shadow: var(--card-shadow); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; }
+        .stat-total .stat-icon { background: #eef2ff; color: #4f46e5; } 
+        .stat-completed .stat-icon { background: #f0fdf4; color: #16a34a; } 
+        .stat-pending .stat-icon { background: #fffbeb; color: #d97706; } 
+        .stat-card h3 { font-size: 26px; color: #0f172a; font-weight: 700; }
+        .stat-card p { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+
+        /* Input Form */
+        .add-task-box { background: #ffffff; padding: 25px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: var(--card-shadow); }
+        .input-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        input[type="text"], input[type="email"], input[type="time"] { flex: 2; min-width: 150px; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 10px; outline: none; background: var(--input-bg); font-size: 15px; }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus { border-color: var(--active-item); background: #ffffff; }
+        input[type="date"] { padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--input-bg); outline: none; cursor: pointer; color: #475569; font-size: 14px; }
+        select { padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--input-bg); outline: none; cursor: pointer; color: #475569; font-size: 14px; }
+        .add-btn { background: var(--active-item); color: white; border: none; padding: 0 25px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+
+        /* Tasks */
+        .task-list { list-style: none; flex: 1; }
+        .task-item { 
+            background: #ffffff; padding: 15px 20px; border-radius: 12px; margin-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); 
+            transition: all 0.2s ease; box-shadow: var(--shadow);
+        }
+        .task-item:hover { border-color: #cbd5e0; transform: translateY(-2px); }
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .checkbox { cursor: pointer; color: #cbd5e0; font-size: 20px; }
+        .checkbox.completed { color: #16a34a; }
+        .task-text { font-size: 15px; color: #1e293b; font-weight: 500; }
+        .task-text.completed { text-decoration: line-through; color: #94a3b8; }
+        
+        /* Tags */
+        .category-tag { font-size: 10px; padding: 3px 8px; border-radius: 8px; font-weight: 600; text-transform: uppercase; margin-left: 10px; background: #f1f5f9; color: #475569; }
+        .date-tag { font-size: 11px; color: #64748b; background: #f8fafc; padding: 3px 8px; border-radius: 8px; border: 1px solid var(--border-color); display: inline-flex; align-items: center; gap: 5px; margin-left: 10px; }
+
+        .actions { display: flex; gap: 15px; align-items: center; }
+        .star-btn { cursor: pointer; color: #cbd5e0; font-size: 16px; }
+        .star-btn.important { color: #eab308; }
+        .delete-btn { color: #ef4444; font-size: 14px; opacity: 0.7; cursor: pointer; }
+
+        /* Empty State */
+        .empty-state { display: none; flex-direction: column; justify-content: center; align-items: center; flex: 1; color: #94a3b8; text-align: center; gap: 15px; }
+        .empty-state i { font-size: 48px; color: #cbd5e0; }
+
+        /* Notification Toast */
+        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #10b981; color: white; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; animation: slideIn 0.3s ease; z-index: 1000; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* MODALS (Settings and Profile) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #ffffff; padding: 30px; border-radius: 16px; width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); position: relative;
+        }
+        .modal-header { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 20px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #94a3b8; }
+        .form-field { margin-bottom: 15px; }
+        .form-field label { display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 5px; text-transform: uppercase; }
+        .save-btn { background: var(--active-item); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
+
+        /* Switch (for Settings) */
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(26px); }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast">Action successful!</div>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="logo"><i class="fa-solid fa-circle-check"></i> ZenTasks</div>
+            <ul class="menu-list">
+                <li class="menu-item active" onclick="filterTasks('all', this)"><div><i class="fa-solid fa-list"></i> All Tasks</div></li>
+                <li class="menu-item" onclick="filterTasks('Today', this)"><div><i class="fa-solid fa-sun"></i> Today</div></li>
+                <li class="menu-item" onclick="filterTasks('Important', this)"><div><i class="fa-solid fa-star"></i> Important</div></li>
+                <li class="menu-item" onclick="filterTasks('Completed', this)"><div><i class="fa-solid fa-circle-check"></i> Completed</div></li>
+            </ul>
+            <div class="section-title">Categories</div>
+            <ul class="category-list">
+                <li class="menu-item" onclick="filterTasks('Work', this)"><div><i class="fa-solid fa-briefcase"></i> Work</div></li>
+                <li class="menu-item" onclick="filterTasks('Personal', this)"><div><i class="fa-solid fa-user"></i> Personal</div></li>
+                <li class="menu-item" onclick="filterTasks('Shopping', this)"><div><i class="fa-solid fa-cart-shopping"></i> Shopping</div></li>
+                <li class="menu-item" onclick="filterTasks('Education', this)"><div><i class="fa-solid fa-book"></i> Education</div></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left"><h1>Welcome Back!</h1><p id="sub-header-msg">Organize your day with calm and clarity.</p></div>
+                
+                <div class="header-right">
+                    <button class="icon-btn" onclick="toggleDropdown('messages-dropdown', event)">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div class="badge" id="msg-badge"></div>
+                    </button>
+                    <div class="header-dropdown" id="messages-dropdown">
+                        <div class="dropdown-header">Task Alerts</div>
+                        <div id="message-items">
+                            <div class="dropdown-item" style="color: #94a3b8;">No task updates.</div>
+                        </div>
+                    </div>
+
+                    <button class="icon-btn" onclick="toggleDropdown('bell-dropdown', event)">
+                        <i class="fa-solid fa-bell"></i>
+                        <div class="badge" id="bell-badge"></div>
+                    </button>
+                    <div class="header-dropdown" id="bell-dropdown">
+                        <div class="dropdown-header">System Notifications</div>
+                        <div id="bell-items">
+                            <div class="dropdown-item" style="color: #94a3b8;">No new alerts.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-profile" onclick="toggleDropdown('profile-dropdown', event)">
+                        <div class="avatar" id="nav-avatar">U<img id="nav-pfp" src=""></div>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: #64748b;"></i>
+                    </div>
+                    <div class="header-dropdown" id="profile-dropdown">
+                        <div class="dropdown-header" id="dropdown-user-name">User Account</div>
+                        <div class="dropdown-item" onclick="openModal('profile-modal')"><i class="fa-solid fa-user"></i> My Profile</div>
+                        <div class="dropdown-item" onclick="document.getElementById('pfp-input').click()"><i class="fa-solid fa-image"></i> Add Profile Pic</div>
+                        <div class="dropdown-item" onclick="openModal('settings-modal')"><i class="fa-solid fa-gear"></i> Settings</div>
+                        <div class="dropdown-item" onclick="handleLogout()" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Logout</div>
+                        <div class="dropdown-item" onclick="alert('Program Closed!')" style="color: #ef4444;"><i class="fa-solid fa-power-off" style="color: #ef4444;"></i> Exit</div>
+                    </div>
+                    <input type="file" id="pfp-input" accept="image/*" style="display: none;" onchange="updateProfilePic(event)">
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon"><i class="fa-solid fa-list"></i></div>
+                    <div><h3 id="total-count">0</h3><p>Total Tasks</p></div>
+                </div>
+                <div class="stat-card stat-completed">
+                    <div class="stat-icon"><i class="fa-solid fa-check-double"></i></div>
+                    <div><h3 id="completed-count">0</h3><p>Completed</p></div>
+                </div>
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div><h3 id="pending-count">0</h3><p>Pending</p></div>
+                </div>
+            </div>
+
+            <div class="add-task-box">
+                <div class="section-title">Create New Task</div>
+                <div class="input-group">
+                    <input type="text" id="task-input" placeholder="What needs to be done?">
+                    <input type="date" id="date-input">
+                    <input type="time" id="time-input">
+                    <select id="category-input">
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Education">Education</option>
+                    </select>
+                    <button class="add-btn" onclick="addTask()"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+
+            <ul class="task-list" id="task-list"></ul>
+
+            <div class="empty-state" id="empty-state">
+                <i class="fa-solid fa-mug-hot"></i>
+                <p>No tasks found. Create one!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('profile-modal')"></i>
+            <div class="modal-header">Edit Profile</div>
+            <div class="form-field">
+                <label>User Name</label>
+                <input type="text" id="prof-name" placeholder="Your Name">
+            </div>
+            <div class="form-field">
+                <label>Email Address</label>
+                <input type="email" id="prof-email" placeholder="Your Email">
+            </div>
+            <div class="form-field">
+                <label>Birthday</label>
+                <input type="date" id="prof-dob">
+            </div>
+            <button class="save-btn" onclick="saveProfile()">Save Profile</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-box">
+            <i class="fa-solid fa-times modal-close" onclick="closeModal('settings-modal')"></i>
+            <div class="modal-header">Settings</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h4 style="font-size: 14px; color: #1e293b;">Task Notifications</h4>
+                    <p style="font-size: 12px; color: #64748b;">Sound alert when task is due.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="notif-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('zenSharedTasks')) || [];
+        let userData = JSON.parse(localStorage.getItem('zenUserProfile')) || { name: 'User', email: 'user@example.com', dob: '', pfp: '' };
+        let appSettings = JSON.parse(localStorage.getItem('zenSettings')) || { notifications: true };
+        let currentFilter = 'all';
+
+        window.onload = function() {
+            document.getElementById('date-input').value = new Date().toISOString().split('T')[0];
+            document.getElementById('time-input').value = "12:00";
+            
+            // Load User Data
+            document.getElementById('dropdown-user-name').innerText = userData.name;
+            document.getElementById('prof-name').value = userData.name;
+            document.getElementById('prof-email').value = userData.email;
+            document.getElementById('prof-dob').value = userData.dob;
+            document.getElementById('notif-toggle').checked = appSettings.notifications;
+            
+            // Set Avatar
+            updateAvatarDisplay();
+            
+            // Check birthday
+            checkBirthdayWish();
+
+            renderTasks();
+            
+            // Periodically check for deadlines
+            setInterval(checkDeadlines, 30000); // Har 30 secs baad alert check hoga
+        };
+
+        function updateAvatarDisplay() {
+            const navAvatar = document.getElementById('nav-avatar');
+            const navPfp = document.getElementById('nav-pfp');
+            
+            if(userData.pfp) {
+                navPfp.src = userData.pfp;
+                navPfp.style.display = 'block';
+                navAvatar.style.background = 'transparent';
+            } else {
+                navPfp.style.display = 'none';
+                navAvatar.style.background = '#4f46e5';
+                navAvatar.innerHTML = userData.name.charAt(0).toUpperCase() + `<img id="nav-pfp" src="">`;
+            }
+        }
+
+        function checkBirthdayWish() {
+            if(userData.dob) {
+                const today = new Date();
+                const dob = new Date(userData.dob);
+                if(today.getDate() === dob.getDate() && today.getMonth() === dob.getMonth()) {
+                    document.getElementById('sub-header-msg').innerHTML = `🎉 Happy Birthday, ${userData.name}! Have a wonderful day! 🎂`;
+                    document.getElementById('sub-header-msg').style.color = "#ec4899";
+                    document.getElementById('sub-header-msg').style.fontWeight = "bold";
+                }
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('zenSharedTasks', JSON.stringify(tasks));
+        }
+
+        function addTask() {
+            const input = document.getElementById('task-input');
+            const category = document.getElementById('category-input');
+            const dateInput = document.getElementById('date-input');
+            const timeInput = document.getElementById('time-input');
+            
+            if (input.value.trim() === '') return;
+            let selectedDate = dateInput.value || new Date().toISOString().split('T')[0];
+            let selectedTime = timeInput.value || "12:00";
+
+            const newTask = {
+                id: Date.now(),
+                name: input.value,
+                category: category.value,
+                date: selectedDate,
+                time: selectedTime,
+                completed: false,
+                important: false
+            };
+
+            tasks.push(newTask);
+            saveToLocalStorage();
+            input.value = '';
+            renderTasks();
+            showToast("Task added successfully!");
+        }
+
+        function toggleComplete(id) {
+            tasks = tasks.map(task => task.id === id ? {...task, completed: !task.completed} : task);
+            saveToLocalStorage();
+            renderTasks();
+        }
+
+        function toggleImportant(id) {
+            tasks = tasks.map(task => task.id === id ? {...task, important: !task.important} : task);
+            saveToLocalStorage();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            saveToLocalStorage();
+            renderTasks();
+            showToast("Task deleted!");
+        }
+
+        function renderTasks() {
+            const listContainer = document.getElementById('task-list');
+            listContainer.innerHTML = '';
+            
+            let filteredTasks = tasks;
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            if (currentFilter === 'Completed') filteredTasks = tasks.filter(t => t.completed);
+            else if (currentFilter === 'Important') filteredTasks = tasks.filter(t => t.important);
+            else if (currentFilter === 'Today') filteredTasks = tasks.filter(t => t.date === todayStr && !t.completed);
+            else if (['Work', 'Personal', 'Shopping', 'Education'].includes(currentFilter)) {
+                filteredTasks = tasks.filter(t => t.category === currentFilter);
+            }
+
+            filteredTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                li.innerHTML = `
+                    <div class="task-left">
+                        <span class="checkbox ${task.completed ? 'completed' : ''}" onclick="toggleComplete(${task.id})">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </span>
+                        <div>
+                            <span class="task-text ${task.completed ? 'completed' : ''}">${task.name}</span>
+                            <span class="category-tag">${task.category}</span>
+                            <span class="date-tag"><i class="fa-regular fa-calendar"></i> ${task.date} at ${task.time}</span>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <span class="star-btn ${task.important ? 'important' : ''}" onclick="toggleImportant(${task.id})">
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                        <span class="delete-btn" onclick="deleteTask(${task.id})"><i class="fa-solid fa-trash"></i></span>
+                    </div>
+                `;
+                listContainer.appendChild(li);
+            });
+
+            updateStats();
+            checkDeadlines();
+            document.getElementById('empty-state').style.display = filteredTasks.length === 0 ? 'flex' : 'none';
+        }
+
+        function checkDeadlines() {
+            const now = new Date();
+            const oneHourLater = new Date(now.getTime() + (60 * 60 * 1000));
+            
+            let upcomingCount = 0;
+            let overdueCount = 0;
+            
+            const msgBox = document.getElementById('message-items');
+            const bellBox = document.getElementById('bell-items');
+            
+            msgBox.innerHTML = '';
+            bellBox.innerHTML = '';
+
+            tasks.forEach(task => {
+                if(task.completed) return;
+                
+                const taskDateTime = new Date(`${task.date}T${task.time}`);
+                
+                // Case 1: Overdue
+                if (taskDateTime < now) {
+                    overdueCount++;
+                    bellBox.innerHTML += `<div class="dropdown-item" style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Overdue: "${task.name}"</div>`;
+                } 
+                // Case 2: Due in 1 hour
+                else if (taskDateTime <= oneHourLater && taskDateTime >= now) {
+                    upcomingCount++;
+                    msgBox.innerHTML += `<div class="dropdown-item" style="color:#eab308;"><i class="fa-solid fa-clock"></i> 1 Hour Left: "${task.name}"</div>`;
+                }
+            });
+
+            // Update Badges and empty text
+            const msgBadge = document.getElementById('msg-badge');
+            const bellBadge = document.getElementById('bell-badge');
+
+            if (upcomingCount > 0) { msgBadge.style.display = 'block'; } else { msgBadge.style.display = 'none'; msgBox.innerHTML = '<div class="dropdown-item" style="color: #94a3b8;">No close deadlines!</div>';}
+            if (overdueCount > 0) { bellBadge.style.display = 'block'; } else { bellBadge.style.display = 'none'; bellBox.innerHTML = '<div class="dropdown-item" style="color: #94a3b8;">No overdue tasks.</div>';}
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            document.getElementById('total-count').innerText = total;
+            document.getElementById('completed-count').innerText = completed;
+            document.getElementById('pending-count').innerText = total - completed;
+        }
+
+        function filterTasks(criteria, element) {
+            currentFilter = criteria;
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            renderTasks();
+        }
+
+        // Dropdown toggles
+        function toggleDropdown(id, event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(id);
+            const isOpen = dropdown.classList.contains('show');
+            document.querySelectorAll('.header-dropdown').forEach(d => d.classList.remove('show'));
+            if (!isOpen) dropdown.classList.add('show');
+        }
+
+        // Modals Logic
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+            document.querySelectorAll('.header-dropdown').forEach(d => d.classList.remove('show'));
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        function saveProfile() {
+            userData.name = document.getElementById('prof-name').value;
+            userData.email = document.getElementById('prof-email').value;
+            userData.dob = document.getElementById('prof-dob').value;
+            
+            localStorage.setItem('zenUserProfile', JSON.stringify(userData));
+            document.getElementById('dropdown-user-name').innerText = userData.name;
+            updateAvatarDisplay();
+            closeModal('profile-modal');
+            checkBirthdayWish();
+            showToast("Profile Updated!");
+        }
+
+        function saveSettings() {
+            appSettings.notifications = document.getElementById('notif-toggle').checked;
+            localStorage.setItem('zenSettings', JSON.stringify(appSettings));
+            closeModal('settings-modal');
+            showToast("Settings Saved!");
+        }
+
+        function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userData.pfp = e.target.result;
+                    localStorage.setItem('zenUserProfile', JSON.stringify(userData));
+                    updateAvatarDisplay();
+                    showToast("Profile Picture Updated!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleLogout() {
+            const sure = confirm("Are you sure you want to logout?");
+            if (sure) {
+                alert("Successfully Logged Out!");
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.icon-btn') && !event.target.closest('.user-profile')) {
+                document.querySelectorAll('.header-dropdown').forEach(d => d.classList.remove('show'));
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+    </script>
+</body>
+</html>

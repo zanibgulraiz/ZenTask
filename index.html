@@ -20,56 +20,108 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--main-text); min-height: 100vh; overflow-x: hidden; }
-
+       body {
+    margin: 0;
+    min-height: 100vh;
+    /* Aesthetic Nature Background */
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
         /* App Layout */
         .app-container { display: flex; min-height: 100vh; }
         
         /* Sidebar */
-        .sidebar { 
-            width: 260px; background: var(--sidebar-bg); padding: 30px 20px; 
-            display: flex; flex-direction: column; gap: 25px; border-right: 1px solid var(--border-color);
-        }
-       .logo {
+        /* Line 29 ke aas paas ye block paste karein (replace existing ones) */
+.sidebar {
+    width: 280px;
+    height: 85vh; /* Perfect alignment in screen center */
+    background: rgba(255, 255, 255, 0.4); /* Glass look (WhatsApp image style) */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 30px 0 0 30px; /* Optional: Rounded left corners for app effect */
+}
+
+.logo {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 5px;
+    margin-bottom: 30px;
     cursor: default;
 }
 
 .logo-icon {
-    background: #4f46e5; /* Purple background jo aapne manga tha */
-    width: 38px;
-    height: 38px;
-    border-radius: 50%; /* Is se perfect circle banega */
+    background: #6366f1; /* Purple/Blue icon color (WhatsApp image style) */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
-}
-
-.logo-icon i {
-    color: white !important; /* Tick mark ko white karne ke liye */
-    font-size: 18px;
 }
 
 .logo-text {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a; /* Dark text color */
-    letter-spacing: -0.5px;
+    font-size: 28px;
+    font-weight: 700;
+    /* Golden Gradient for text (WhatsApp image style) */
+    background: linear-gradient(135deg, #c5a47e, #af8c5f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
         
-        .menu-list, .category-list { list-style: none; }
-        .menu-item { 
-            padding: 12px 15px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 500; 
-            display: flex; justify-content: space-between; align-items: center; color: #64748b; transition: all 0.2s ease; 
-        }
-        .menu-item:hover { background: #e2e8f0; color: #0f172a; }
-        .menu-item.active { background: var(--active-item); color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
-        .menu-item div { display: flex; align-items: center; gap: 12px; }
-        .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 12px; margin-top: 15px; font-weight: 600; }
+        .menu-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.menu-item {
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 15px; /* Perfect rounded corners */
+    color: #444;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover effect */
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateX(5px);
+}
+
+/* Dark blue active button (WhatsApp design) */
+.menu-item.active {
+    background: #2d3e50; 
+    color: white !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.menu-item i {
+    font-size: 18px;
+    color: inherit;
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    margin: 20px 0 10px 20px;
+    letter-spacing: 1px;
+}
 
         /* Main Content */
         .main-content { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative;}
@@ -262,7 +314,7 @@
         <div class="sidebar">
            <div class="logo">
     <div class="logo-icon">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-solid fa-check" style="color: white;"></i>
     </div>
     <span class="logo-text">ZenTasks</span>
 </div>

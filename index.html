@@ -32,10 +32,22 @@
     align-items: center;
 }
         /* App Layout */
-        .app-container { display: flex; min-height: 100vh; }
+       .app-container { 
+    display: flex; 
+    width: 90%;
+    max-width: 1200px;
+    height: 85vh;
+    background: rgba(255, 255, 255, 0.2); /* Transparent glass effect */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px; 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
         
         /* Sidebar */
-        /* Line 29 ke aas paas ye block paste karein (replace existing ones) */
+      
 .sidebar {
     width: 280px;
     height: 85vh; /* Perfect alignment in screen center */

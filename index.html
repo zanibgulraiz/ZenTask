@@ -32,18 +32,20 @@
     align-items: center;
 }
         /* App Layout */
-       .app-container { 
+       .app-container {  
     display: flex; 
     width: 90%;
     max-width: 1200px;
-    height: 85vh;
-    background: rgba(255, 255, 255, 0.2); /* Transparent glass effect */
+    height: 85vh; 
+    background: rgba(255, 255, 255, 0.2); 
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 30px; 
+    border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    /* Scroll enable karne ke liye ye lines zaroori hain */
+    overflow-y: auto; 
+    overflow-x: auto;
 }
         
         /* Sidebar */

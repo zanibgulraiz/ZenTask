@@ -43,7 +43,6 @@
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
-    /* Scroll enable karne ke liye ye lines zaroori hain */
     overflow-y: auto; 
     overflow-x: auto;
 }
@@ -494,7 +493,7 @@
             renderTasks();
             
             // Periodically check for deadlines
-            setInterval(checkDeadlines, 30000); // Har 30 secs baad alert check hoga
+            setInterval(checkDeadlines, 30000); 
         };
 
         function updateAvatarDisplay() {
